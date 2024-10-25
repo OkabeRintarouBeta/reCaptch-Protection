@@ -64,7 +64,7 @@ def traverse_files(folder_path):
 # predicted_class, confidence = predict_tile(image_path)
 # print(f"Predicted class: {predicted_class}, Confidence: {confidence:.2f}")
 
-train_dir="../recaptcha-dataset/Training"
+train_dir="recaptcha-dataset/Training"
 traverse_files(train_dir)
 
 
