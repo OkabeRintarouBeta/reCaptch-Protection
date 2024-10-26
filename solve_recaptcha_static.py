@@ -2,12 +2,24 @@ from models.YOLO_Classification import predict
 from PIL import Image  
 import numpy as np  
 import os
-from keras.models import load_model
+from tensorflow.keras.models import load_model
 
 # Constants
-CLASSES = ["Bicycle", "Bridge", "Bus", "Car", "Chimney", "Crosswalk", "Hydrant", "Motorcycle", "Other", "Palm", "Stairs", "Traffic"]
-YOLO_CLASSES = ['bicycle', 'bridge', 'bus', 'car', 'chimney', 'crosswalk', 'hydrant', 'motorcycle', 'mountain', 'other', 'palm', 'traffic']
+BASELINE_CLASSES = ["Bicycle", "Bridge", "Bus", "Car", "Chimney", "Crosswalk", "Hydrant", "Motorcycle", "Other", "Palm", "Stairs", "Traffic Light"]
+YOLO_CLASSES = ['Bicycle', 'Bridge', 'Bus', 'Car', 'Chimney', 'Crosswalk', 'Hydrant', 'Motorcycle', 'Mountain', 'Other', 'Palm', 'Traffic Light']
 MODEL_OPTION = 'baseline'
+# MODEL_OPTION = 'YOLO'
+
+if MODEL_OPTION=='baseline':
+    CLASS = BASELINE_CLASSES
+    # initialize the model
+    baseline_model = load_model('models/Base_Line/first_model.h5')
+elif MODEL_OPTION=='YOLO':
+    CLASS = YOLO_CLASSES
+
+# initialize per-class counters
+class_correct_counts = {cls: 0 for cls in CLASS}
+class_total_counts = {cls: 0 for cls in CLASS}
 
 def predict_image(image_path, model):
     """
@@ -54,7 +66,6 @@ def predict_tile(image_path):
 
     return predicted_class, probabilities[predicted_class_idx]
 
-
 def traverse_files(folder_path):
     """
     Traverse all files in a folder and predict the class of each image.
@@ -66,8 +77,6 @@ def traverse_files(folder_path):
     total=0
     correct_count=0
 
-    baseline_model=load_model('models/Base_Line/first_model.h5')
-
     # Traverse all subdirectories in the folder
     for subdir in os.listdir(folder_path):
         subdir_path = os.path.join(folder_path, subdir)
@@ -76,38 +85,50 @@ def traverse_files(folder_path):
             for file in os.listdir(subdir_path):
                 # Check if the file is an image
                 if file.endswith(".png") or file.endswith(".jpg"):
-                    # Predict the class of the image
                     image_path = os.path.join(subdir_path, file)
-
+                    label = str(subdir)
+                    # Predict the class of the image
                     if(MODEL_OPTION=='baseline'):
                         predicted_class, confidence=predict_image(image_path, baseline_model)
                     else:
                         predicted_class, confidence = predict_tile(image_path)
-                    # The subdir name is the label
-                    # print(subdir)
-                    label = str(subdir)
-                    if(label==predicted_class):
-                        correct_count+=1
-                    # print(f"Image: {file}, Predicted class: {predicted_class}, Confidence: {confidence:.2f}, Label: {label}")
-                    
-                    total+=1
-        
 
-    print("correct count: ", correct_count," total: ", total)
-    print("Accuracy: ", correct_count/total)
-    return correct_count,total
+                    # Update label counts
+                    if label in class_total_counts:
+                        class_total_counts[label] += 1
+                    # Check if the predicted class matches the label, and update correct counts
+                    if label == predicted_class:
+                        correct_count += 1
+                        if label in class_correct_counts:
+                            class_correct_counts[label] += 1
+                    total += 1
+
+    # Calculate and display per-class accuracy
+    print("\nPer-Class Accuracy:")
+    for cls in CLASS:
+        class_accuracy = (class_correct_counts[cls] / class_total_counts[cls]) if class_total_counts[cls] > 0 else 0
+        print(f"{cls}: {class_accuracy:.2f}")
+
+    # Calculate overall accuracy
+    accuracy = correct_count / total if total > 0 else 0
+    return accuracy, total
 
 # image_path = "../recaptcha-dataset/Training/Bicycle/Bicycle (76).png" 
 # predicted_class, confidence = predict_tile(image_path)
 # print(f"Predicted class: {predicted_class}, Confidence: {confidence:.2f}")
 
+# Paths to the training and validation datasets
 train_dir="data/Training"
 val_dir="data/Validation"
-correct_count_train,total_train = traverse_files(train_dir)
-correct_count_val,total_val = traverse_files(val_dir)
-print("Training Accuracy: ", correct_count_train/total_train)
-print("train_count: ", total_train)
-print("validation Accuracy: ", correct_count_val/total_val)
-print("val_count: ", total_val)
-print("Total Accuracy: ", (correct_count_train+correct_count_val)/(total_train+total_val))
+
+print("\n--- Training Evaluation ---")
+train_accuracy, total_train = traverse_files(train_dir)
+print("Training Accuracy: ", train_accuracy)
+
+print("\n--- Validation Evaluation ---")
+val_accuracy, total_val = traverse_files(val_dir)
+print("Validation Accuracy: ", val_accuracy)
+
+print("\nTotal Accuracy: ", (train_accuracy*total_train + val_accuracy*total_val)/(total_train+total_val))
+
 
