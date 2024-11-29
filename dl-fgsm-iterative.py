@@ -19,6 +19,12 @@ num_steps = 10
 alpha = 0.1
 
 # Map the tile path to the tensor index using the CLASS dictionary
+def get_label_from_path(tile_path):
+    # Extract the class name from the path
+    # Assumes the path format is "data/Training/<Class Name>/<File Name>.png"
+    class_name = tile_path.split('/')[-2]  # Get the second-to-last component of the path
+    return list(CLASS.keys())[list(CLASS.values()).index(class_name)]
+
 def predict_tile_with_fgsm(tile_path):
     y_index = get_label_from_path(tile_path)
     y = torch.tensor([y_index], dtype=torch.long)  # Ensure y is a long tensor for cross-entropy
@@ -34,10 +40,13 @@ def predict_tile_with_fgsm(tile_path):
 
     for _ in range(num_steps):
         results = model(x_adv)
+        print("results")
+        print(results)
         result = results[0]
 
         # Use the raw probabilities (avoid .data to retain gradients)
-        probabilities = result.probs.unsqueeze(0)  # Add batch dimension, shape: [1, num_classes]
+        probabilities = result.probs.data.unsqueeze(0)  # Add batch dimension, shape: [1, num_classes]
+        probabilities.requires_grad = True
 
         # Compute adversarial loss
         loss = -F.cross_entropy(probabilities, y)  # Negate to maximize loss
@@ -59,8 +68,6 @@ def predict_tile_with_fgsm(tile_path):
     cv2.imshow("Adversarial Image", cv2.cvtColor(perturbed_image_np, cv2.COLOR_RGB2BGR))
     cv2.waitKey(3000)
     cv2.destroyAllWindows()
-
-
 
 
 # Test the function with the specified model and image path
