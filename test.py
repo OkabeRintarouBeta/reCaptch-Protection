@@ -24,15 +24,10 @@ def predict_tile_with_fgsm(tile_path):
     # Perform the original prediction
     resized_input = torch.nn.functional.interpolate(to_predict, size=(128, 128), mode="bilinear", align_corners=False)
     results = model(resized_input)
-   
     result = results[0]
 
     # Use max probability as mock loss for FGSM
     if result.probs is not None:
-        print("probabilities")
-        print(result.probs.data)
-        print(len(result.probs.data))
-        print("=====")
         max_prob_index = result.probs.top1  # Index of the top class
         max_prob_confidence = result.probs.top1conf  # Confidence of the top class
         max_prob_class_name = result.names[max_prob_index]
@@ -67,7 +62,7 @@ def predict_tile_with_fgsm(tile_path):
 
         # Display the perturbed image at the original size
         cv2.imshow("Adversarial Image", cv2.cvtColor(perturbed_image_np, cv2.COLOR_RGB2BGR))
-        cv2.waitKey(3000)
+        cv2.waitKey(0)
         cv2.destroyAllWindows()
 
         # Return the original and polluted predictions, and the adversarial image array
@@ -82,4 +77,4 @@ def predict_tile_with_fgsm(tile_path):
         return None
 
 # Test the function with the specified model and image path
-predict_tile_with_fgsm("data/Training/Traffic Light/Tlight (81).png")  # Replace with your image path()
+predict_tile_with_fgsm("data/Training/Traffic Light/Tlight (81).png")  # Replace with your image path

@@ -1,5 +1,6 @@
 from ultralytics import YOLO
 import torch
+import torch.nn.functional as F
 from torchvision import transforms
 from PIL import Image
 import numpy as np
@@ -16,54 +17,62 @@ alpha = epsilon / num_iterations  # Step size per iteration
 
 
 def predict_tile_with_fgsm(tile_path):
-    """
-    Applies iterative FGSM to generate adversarial examples.
-    """
+    # Load the image and preprocess
+    tile = Image.open(tile_path).convert("RGB")
+    to_predict = transforms.ToTensor()(tile).unsqueeze(0)  # Shape: [1, 3, H, W]
+    to_predict.requires_grad = True
+
+    # Initialize adversarial example
+    x_adv = to_predict.clone()
+
+    # Original prediction
+    resized_input = F.interpolate(x_adv, size=(128, 128), mode="bilinear", align_corners=False)
+    results = model(resized_input)
+    result = results[0]
+    max_prob_index = result.probs.top1  # Index of the top class
+    max_prob_confidence = result.probs.top1conf  # Confidence of the top class
+    max_prob_class_name = result.names[max_prob_index]
+
+    print(f"Original prediction: {max_prob_class_name} with confidence {max_prob_confidence.item():.4f}")
 
     # Perform iterative FGSM
-    tile = Image.open(tile_path).convert("RGB")
-    original_size = tile.size  # Save the original image size for later use
-
-    # Convert the image to a tensor and add a batch dimension
-    to_predict = transforms.ToTensor()(tile).unsqueeze(0)  # Shape: (1, 3, original_height, original_width)
-    to_predict.requires_grad = True  # Enable gradients for FGSM
-    
     for _ in range(num_iterations):
-
-        # Resize to model's input size (128x128) and make prediction
-        resized_input = torch.nn.functional.interpolate(
-            to_predict, size=(128, 128), mode="bilinear", align_corners=False
-        )
+        # Resize input for model
+        resized_input = F.interpolate(x_adv, size=(128, 128), mode="bilinear", align_corners=False)
         results = model(resized_input)
         result = results[0]
 
-        # Mock loss using top probability (use actual loss if available)
-        loss = -result.probs.data.sum() if result.probs is not None else 0
+        # Compute adversarial loss (maximize the confidence of an incorrect class)
+        loss = -to_predict.sum() # Use the top-1 confidence as the loss
+        model.zero_grad()
+        loss.backward()
 
-        model.zero_grad()  # Clear previous gradients
-        loss.backward()  # Backpropagate to calculate gradients
-
+        # Update adversarial example
         with torch.no_grad():
-            # Add perturbation
-            sign_data_grad = to_predict.grad.sign()
-            perturbed_tensor = to_predict + alpha * sign_data_grad
-            # Clip the perturbation to ensure it stays within the epsilon bound
-            perturbed_tensor = torch.clamp(perturbed_tensor, 0, 1)
+            grad_sign = x_adv.grad.sign()
+            x_adv = x_adv + alpha * grad_sign  # Apply perturbation
+            print(x_adv)
+            perturbation = torch.clamp(x_adv - to_predict, min=-epsilon, max=epsilon)
+            x_adv = torch.clamp(to_predict + perturbation, min=0, max=1)
+            x_adv.requires_grad = True  # Re-enable gradient tracking for the next iteration
 
-    # Resize perturbed image back to original size
-    perturbed_image_resized = torch.nn.functional.interpolate(
-        perturbed_tensor, size=(128, 128), mode="bilinear", align_corners=False
-    )
+    # Polluted prediction
+    polluted_results = model(x_adv)
+    polluted_result = polluted_results[0]
+    polluted_max_prob_index = polluted_result.probs.top1
+    polluted_max_prob_class_name = polluted_result.names[polluted_max_prob_index]
+    polluted_max_prob_confidence = polluted_result.probs.top1conf
 
-    # Convert to numpy for saving
-    perturbed_image_np = perturbed_image_resized.squeeze().permute(1, 2, 0).cpu().numpy() * 255
+    print(f"Polluted prediction: {polluted_max_prob_class_name} with confidence {polluted_max_prob_confidence.item():.4f}")
+
+    # Convert the adversarial image back to numpy for visualization
+    perturbed_image_np = x_adv.squeeze().permute(1, 2, 0).cpu().numpy() * 255
     perturbed_image_np = perturbed_image_np.astype(np.uint8)
 
-    # Save the perturbed image
+    # Display the perturbed image
     cv2.imshow("Adversarial Image", cv2.cvtColor(perturbed_image_np, cv2.COLOR_RGB2BGR))
     cv2.waitKey(3000)
     cv2.destroyAllWindows()
-
 
 
 
