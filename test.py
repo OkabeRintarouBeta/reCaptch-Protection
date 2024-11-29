@@ -32,7 +32,8 @@ def predict_tile(tile_path):
         max_prob_confidence = result.probs.top1conf  # Confidence of the top class
         max_prob_class_name = result.names[max_prob_index]
 
-        print(f"Now prediction: {max_prob_class_name} with confidence {max_prob_confidence.item():.4f}")
+        print(f"Predict image:{tile_path}\nNow prediction: {max_prob_class_name} with confidence {max_prob_confidence.item():.4f}")
 
 # Test the function with the specified model and image path
-predict_tile("tlight-attack81.png")  # Replace with your image path
+predict_tile("tlight-attack81-eps0.2-n1.png")  
+predict_tile("tlight-attack81-noni-eps0.2.png")

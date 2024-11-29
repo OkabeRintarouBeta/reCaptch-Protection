@@ -24,7 +24,7 @@ CLASS = {0: 'Bicycle', 1: 'Bridge', 2: 'Bus', 3: 'Car', 4: 'Chimney', 5: 'Crossw
 
 # Parameters for FGSM
 epsilon = 0.2  # Total perturbation magnitude
-num_steps = 20  # Number of iterations
+num_steps = 1  # Number of iterations
 alpha = epsilon / num_steps  # Step size per iteration
 
 # Map the tile path to the tensor index using the CLASS dictionary
@@ -79,7 +79,7 @@ def predict_tile_with_fgsm(tile_path):
     # cv2.imshow("Adversarial Image", cv2.cvtColor(perturbed_image_np, cv2.COLOR_RGB2BGR))
     # cv2.waitKey(3000)
     # cv2.destroyAllWindows()
-    cv2.imwrite("tlight-attack81.png", cv2.cvtColor(perturbed_image_np, cv2.COLOR_RGB2BGR))
+    cv2.imwrite(f"tlight-attack81-eps{epsilon}-n{num_steps}.png", cv2.cvtColor(perturbed_image_np, cv2.COLOR_RGB2BGR))
 
 # Test the function with the specified model and image path
 predict_tile_with_fgsm("data/Training/Traffic Light/Tlight (81).png")  # Replace with your image path
