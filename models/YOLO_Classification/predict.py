@@ -40,10 +40,10 @@ def predict_tile(tile_path):
 
     # Get the class with the highest probability
     max_prob_index = result.probs.top1
-    max_prob_class_name = class_names[max_prob_index]
+    max_prob_class_name = class_names[max_prob_index] # => np.argmax(probabilities)
 
     # Return a list of the prediction array, the class name with highest probability and its index
-    return [probabilities, max_prob_class_name, max_prob_index]
+    return [probabilities, max_prob_class_name, max_prob_index, class_names]
 
     
 

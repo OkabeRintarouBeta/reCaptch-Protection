@@ -24,6 +24,7 @@ def predict_tile_with_fgsm(tile_path):
     # Perform the original prediction
     resized_input = torch.nn.functional.interpolate(to_predict, size=(128, 128), mode="bilinear", align_corners=False)
     results = model(resized_input)
+    print(results)
     result = results[0]
 
     # Use max probability as mock loss for FGSM

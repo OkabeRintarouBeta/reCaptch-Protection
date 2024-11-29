@@ -85,18 +85,13 @@ if __name__ == "__main__":
                         
                         new_image_path="yolo8-gen-images/"+category+"/"+dirname+"/"+filename
 
-                        if filename == "Hydrant (263).png":
-                            print(os.path.join(dir, filename))
-                            print(correctness)
-                            exit()
-
-                        # if the original prediction is incorrect, save the original image
-                        if correctness == 0 :
-                            # copy the original image
-                            cv2.imwrite(new_image_path, cv2.imread(os.path.join(dir, filename)))
-                        else:
-                            modify_image(predict_tensor,new_image_path)  
-                            predict_tensor1,correctness1 = predict_tile_with_fgsm(new_image_path,dirname)
+                        # # if the original prediction is incorrect, save the original image
+                        # if correctness == 0 :
+                        #     # copy the original image
+                        #     cv2.imwrite(new_image_path, cv2.imread(os.path.join(dir, filename)))
+                        # else:
+                        modify_image(predict_tensor,new_image_path)  
+                        predict_tensor1,correctness1 = predict_tile_with_fgsm(new_image_path,dirname)
 
                 
                 # exit()
