@@ -34,7 +34,7 @@ def predict_tile_with_fgsm(tile_path):
 
         # Print the original prediction details
         print(f"Original prediction: {max_prob_class_name} with confidence {max_prob_confidence.item():.4f}")
-
+       
         # Mock FGSM loss by summing over all elements in the `to_predict` tensor
         mock_loss = to_predict.sum()
         mock_loss.backward()  # Compute gradients for FGSM
@@ -77,4 +77,4 @@ def predict_tile_with_fgsm(tile_path):
         return None
 
 # Test the function with the specified model and image path
-predict_tile_with_fgsm("data/Training/Bicycle/Bicycle (98).png")  # Replace with your image path
+predict_tile_with_fgsm("data/Training/Traffic Light/Tlight (81).png")  # Replace with your image path

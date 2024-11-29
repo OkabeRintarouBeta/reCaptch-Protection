@@ -1,4 +1,6 @@
-from models.YOLO_Classification import predict  
+from ultralytics import YOLO
+import torch
+from torchvision import transforms
 from PIL import Image  
 import numpy as np  
 import os
@@ -34,25 +36,36 @@ def predict_image(image_path, model):
     
     return CLASSES[predicted_class_idx], confidence
 
-def predict_tile(image_path):
-    """
-    Predict the class of an image tile using the YOLO model.
-    
-    Args:
-    - image_path (str): Path to the image file.
-    
-    Returns:
-    - Predicted class and confidence score.
-    """
-    # Use the `predict` function from YOLO_Classification
-    result = predict.predict_tile(image_path)  
+def predict_tile(tile_path):
+    model_path = 'models/YOLO_Classification/train4/weights/best.pt'
+    model = YOLO(model_path)
 
-    # Extract the predicted class and probabilities
-    probabilities = result[0]
-    predicted_class = result[1]
-    predicted_class_idx = result[2]
+    tile = Image.open(tile_path).convert("RGB")
+    original_size = tile.size  # Save the original image size for later use
 
-    return predicted_class, probabilities[predicted_class_idx]
+    # Convert the image to a tensor and add a batch dimension
+    to_predict = transforms.ToTensor()(tile).unsqueeze(0)  # Shape: (1, 3, original_height, original_width)
+    to_predict.requires_grad = True  # Enable gradients for FGSM
+
+    # Perform the original prediction
+    resized_input = torch.nn.functional.interpolate(to_predict, size=(128, 128), mode="bilinear", align_corners=False)
+    results = model(resized_input)
+    result = results[0]
+
+    # Use max probability as mock loss for FGSM
+    if result.probs is not None:
+        max_prob_index = result.probs.top1  # Index of the top class
+        max_prob_confidence = result.probs.top1conf  # Confidence of the top class
+        max_prob_class_name = result.names[max_prob_index]
+
+        # Print the original prediction details
+        # print(f" prediction: {max_prob_class_name} with confidence {max_prob_confidence.item():.4f}")
+
+
+    else:
+        print("No predictions were made.")
+
+    return max_prob_class_name,result.probs
 
 
 def traverse_files(folder_path):
@@ -86,39 +99,38 @@ def traverse_files(folder_path):
                     else:
                         predicted_class, confidence = predict_tile(image_path)
                         
-                    # The subdir name is the label
-                    # print(subdir)
                     label = str(subdir)
-                    if(label=="Mountain"):
-                            print(f"Predicted class: {predicted_class}, Confidence: {confidence:.2f}")
                     if(label.lower()==predicted_class.lower()):
                         correct_count+=1
                         class_correct_count+=1
-                    # print(f"Image: {file}, Predicted class: {predicted_class}, Confidence: {confidence:.2f}, Label: {label}")
+
+                    
                     total += 1
                     class_total += 1
+
+                
 
             # Calculate and write class accuracy to a file
             if class_total > 0:
                 class_accuracy = class_correct_count / class_total
-                with open("class_accuracies.txt", "a") as f:
-                    f.write(f"Class: {subdir}, Accuracy: {class_accuracy:.2f}\n")
+
+                # print(subdir_path, class_accuracy)
+                with open("class_accuracies_fgsm.txt", "a") as f:
+                    f.write(f"Class: {subdir}, Accuracy: {class_accuracy:.5f}\n")
 
     print("correct count: ", correct_count," total: ", total)
     print("Accuracy: ", correct_count/total)
     
     # Write overall accuracy to a file
-    with open("class_accuracies.txt", "a") as f:
-        f.write(f"Total Correct count: {correct_count}, Total: {total}, Accuracy: {correct_count/total:.2f}\n")
+    with open("class_accuracies_fgsm.txt", "a") as f:
+        f.write(f"Total Correct count: {correct_count}, Total: {total}, Accuracy: {correct_count/total:.5f}\n")
         f.write("\n-------------------\n")
     return correct_count,total
 
-# image_path = "../recaptcha-dataset/Training/Bicycle/Bicycle (76).png" 
-# predicted_class, confidence = predict_tile(image_path)
-# print(f"Predicted class: {predicted_class}, Confidence: {confidence:.2f}")
 
-train_dir="data/Training"
-val_dir="data/Validation"
+# Modify train and validation directory path to test different datasets
+train_dir="attack/yolo8-gen-images/Training"
+val_dir="attack/yolo8-gen-images/Validation"
 correct_count_train,total_train = traverse_files(train_dir)
 correct_count_val,total_val = traverse_files(val_dir)
 print("Training Accuracy: ", correct_count_train/total_train)
