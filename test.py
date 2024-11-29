@@ -35,5 +35,8 @@ def predict_tile(tile_path):
         print(f"Predict image:{tile_path}\nNow prediction: {max_prob_class_name} with confidence {max_prob_confidence.item():.4f}")
 
 # Test the function with the specified model and image path
-predict_tile("tlight-attack81-eps0.2-n1.png")  
-predict_tile("tlight-attack81-noni-eps0.2.png")
+# predict_tile("tlight-attack81-eps0.2-n1.png")
+predict_tile("tlight-attack81-eps0.2-n20.png")
+# predict_tile("tlight-targeted-attack81-to-Other-eps0.2-n1.png") 
+predict_tile("tlight-targeted-attack81-to-Other-eps0.2-n20.png")    
+# predict_tile("tlight-attack81-noni-eps0.2.png")
