@@ -37,6 +37,10 @@ def predict_tile(tile_path):
 # Test the function with the specified model and image path
 # predict_tile("tlight-attack81-eps0.2-n1.png")
 predict_tile("tlight-attack81-eps0.2-n20.png")
+predict_tile("improved-untargeted-attack81-eps0.2-n20.png")
+predict_tile("improved-untargeted-attack81-eps0.2-n10.png")
 # predict_tile("tlight-targeted-attack81-to-Other-eps0.2-n1.png") 
-predict_tile("tlight-targeted-attack81-to-Other-eps0.2-n20.png")    
+#predict_tile("tlight-targeted-attack81-to-Other-eps0.2-n20.png")
+#predict_tile("improved-targeted-attack81-to-Other-eps0.2-n20.png")
+
 # predict_tile("tlight-attack81-noni-eps0.2.png")
