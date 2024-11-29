@@ -12,10 +12,10 @@ model = YOLO(model_path)
 # Set a higher epsilon for FGSM to increase noise
 epsilon = 1e-1
 
-def modify_image(predict_tensor, image_path):
+def modify_image(predict_tensor, image_path): # fgsm attack algo
 
     # Mock FGSM loss
-    mock_loss = predict_tensor.sum()
+    mock_loss = predict_tensor.sum() # debug: we cant use mock loss here 
     mock_loss.backward()  
 
     with torch.no_grad():
