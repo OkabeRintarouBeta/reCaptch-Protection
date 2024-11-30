@@ -8,7 +8,7 @@ import os
 import cv2
 
 class ImprovedUntargetedFGSM:
-    def __init__(self, model_path, class_dict, epsilon=0.05, num_steps=1, decay_factor=0.9):
+    def __init__(self, model_path, class_dict, epsilon=0.08, num_steps=1, decay_factor=0.9):
         self.model_path = model_path
         self.class_dict = class_dict
         self.epsilon = epsilon

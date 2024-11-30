@@ -31,4 +31,4 @@ def generate_adversarial_example(attack_type, tile_path):
     return adversarial_example
 
 # Test the function with the specified model and image path
-generate_adversarial_example("targeted_fgsm_improved", "data/Training/Bridge/Bridge (79).png")
+generate_adversarial_example("targeted_fgsm", "data/Training/Bicycle/Bicycle (97).png")

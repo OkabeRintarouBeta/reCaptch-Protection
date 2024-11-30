@@ -14,7 +14,7 @@ from attack.fgsm_targeted_improved import ImprovedTargetedFGSM
 CLASSES = ["Bicycle", "Bridge", "Bus", "Car", "Chimney", "Crosswalk", "Hydrant", "Motorcycle", "Other", "Palm", "Stairs", "Traffic Light"]
 YOLO_CLASSES = ['bicycle', 'bridge', 'bus', 'car', 'chimney', 'crosswalk', 'hydrant', 'motorcycle', 'mountain', 'other', 'palm', 'traffic light']
 MODEL_OPTION = 'yolo'
-attack_type= 'untargeted_fgsm_improved'
+attack_type= 'untargeted_fgsm'
 
 def predict_image(image_path, model):
     """

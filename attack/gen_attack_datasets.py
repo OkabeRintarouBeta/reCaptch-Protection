@@ -64,7 +64,7 @@ if __name__ == "__main__":
 
     #read attack type from args
     parser = argparse.ArgumentParser()
-    parser.add_argument('--attack_type', type=str, default='untarged_fgsm')
+    parser.add_argument('--attack_type', type=str, default='untargeted_fgsm')
     parser.add_argument('--model_path', type=str, default='../models/YOLO_Classification/train4/weights/best.pt')
     parser.add_argument('--root_data_dir', type=str, default='../data')
 
