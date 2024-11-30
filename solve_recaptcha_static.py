@@ -10,6 +10,7 @@ from keras.models import load_model
 CLASSES = ["Bicycle", "Bridge", "Bus", "Car", "Chimney", "Crosswalk", "Hydrant", "Motorcycle", "Other", "Palm", "Stairs", "Traffic Light"]
 YOLO_CLASSES = ['bicycle', 'bridge', 'bus', 'car', 'chimney', 'crosswalk', 'hydrant', 'motorcycle', 'mountain', 'other', 'palm', 'traffic light']
 MODEL_OPTION = 'yolo'
+attack_type= 'untargeted_fgsm_improved'
 
 def predict_image(image_path, model):
     """
@@ -109,28 +110,28 @@ def traverse_files(folder_path):
                     class_total += 1
 
                 
-
             # Calculate and write class accuracy to a file
             if class_total > 0:
                 class_accuracy = class_correct_count / class_total
 
                 # print(subdir_path, class_accuracy)
-                with open("class_accuracies_fgsm.txt", "a") as f:
+                with open(f"class_accuracies_{attack_type}.txt", "a") as f:
                     f.write(f"Class: {subdir}, Accuracy: {class_accuracy:.5f}\n")
 
     print("correct count: ", correct_count," total: ", total)
     print("Accuracy: ", correct_count/total)
     
     # Write overall accuracy to a file
-    with open("class_accuracies_fgsm.txt", "a") as f:
+    with open(f"class_accuracies_{attack_type}.txt", "a") as f:
         f.write(f"Total Correct count: {correct_count}, Total: {total}, Accuracy: {correct_count/total:.5f}\n")
         f.write("\n-------------------\n")
     return correct_count,total
 
 
+
 # Modify train and validation directory path to test different datasets
-train_dir="attack/yolo8-gen-images/Training"
-val_dir="attack/yolo8-gen-images/Validation"
+train_dir=f"attack/{attack_type}/Training"
+val_dir=f"attack/{attack_type}/Validation"
 correct_count_train,total_train = traverse_files(train_dir)
 correct_count_val,total_val = traverse_files(val_dir)
 print("Training Accuracy: ", correct_count_train/total_train)

@@ -1,4 +1,5 @@
 attack/yolo8-gen-images
+attack/generated_data
 **/runs/**
 **/.DS_Store**
 
