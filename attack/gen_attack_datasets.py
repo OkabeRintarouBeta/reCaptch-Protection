@@ -74,11 +74,8 @@ if __name__ == "__main__":
     model_path=args.model_path
     # change attack_type as needed
     attack_type=args.attack_type
-    num_steps=int(args.num_steps)
-    epsilon=float(args.epsilon)
-    decay_factor=float(args.decay_factor)
 
-    attack_model = import_model(model_path, attack_type, epsilon=epsilon, num_steps=num_steps, decay_factor=decay_factor)
+    attack_model = import_model(model_path, attack_type)
     folder_name = gen_folder_name(attack_type, attack_model)
 
     for category in ["Training", "Validation"]:
