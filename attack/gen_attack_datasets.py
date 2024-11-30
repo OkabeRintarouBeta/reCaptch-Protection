@@ -22,16 +22,16 @@ TARGETED_CLASS = {
     "Palm":"Mountain","Stairs":"Other","Traffic Light":"Crosswalk"
 }
 
-def import_model(model_path, attack_type, epsilon = 0.2, num_steps = 20, decay_factor=0.9):
+def import_model(model_path, attack_type):
     if attack_type == "untargeted_fgsm_improved":
-        attack_model = ImprovedUntargetedFGSM(model_path, CLASS, epsilon=epsilon, num_steps=num_steps, decay_factor=decay_factor)
+        attack_model = ImprovedUntargetedFGSM(model_path, CLASS)
 
     elif attack_type == "untargeted_fgsm":
-        attack_model = UntargetedFGSM(model_path, CLASS, epsilon=epsilon, num_steps=num_steps)
+        attack_model = UntargetedFGSM(model_path, CLASS)
     elif attack_type == "targeted_fgsm":
-        attack_model = TargetedFGSM(model_path, CLASS, epsilon=epsilon, num_steps=num_steps)
+        attack_model = TargetedFGSM(model_path, CLASS)
     elif attack_type == "targeted_fgsm_improved":
-        attack_model = ImprovedTargetedFGSM(model_path, CLASS, epsilon=epsilon, num_steps=num_steps, decay_factor=decay_factor)
+        attack_model = ImprovedTargetedFGSM(model_path, CLASS)
     
     return attack_model
 
@@ -64,10 +64,7 @@ if __name__ == "__main__":
 
     #read attack type from args
     parser = argparse.ArgumentParser()
-    parser.add_argument('--attack_type', type=str, default='untargeted_fgsm')
-    parser.add_argument('--num_steps', type=str, default=1 )
-    parser.add_argument('--epsilon', type=str, default=0.2)
-    parser.add_argument('--decay_factor', type=str, default=0.9)
+    parser.add_argument('--attack_type', type=str, default='untarged_fgsm')
     parser.add_argument('--model_path', type=str, default='../models/YOLO_Classification/train4/weights/best.pt')
     parser.add_argument('--root_data_dir', type=str, default='../data')
 

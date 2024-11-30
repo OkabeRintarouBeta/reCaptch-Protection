@@ -8,12 +8,15 @@ import os
 import cv2
 
 class TargetedFGSM:
-    def __init__(self, model_path, class_dict, epsilon=0.2, num_steps=20):
+    def __init__(self, model_path, class_dict, epsilon=0.05, num_steps=1):
         self.model_path = model_path
         self.class_dict = class_dict
         self.epsilon = epsilon
         self.num_steps = num_steps
         self.alpha = epsilon / num_steps
+
+        self.image = None
+        self.adv_image = None
 
         # Load the model
         self.model = YOLO(model_path)
@@ -40,6 +43,7 @@ class TargetedFGSM:
 
         tile = Image.open(tile_path).convert("RGB")
         to_predict = transforms.ToTensor()(tile).unsqueeze(0)
+        self.image = to_predict
         to_predict.requires_grad = True
 
         x_adv = to_predict.clone().detach().requires_grad_(True)
@@ -57,14 +61,18 @@ class TargetedFGSM:
                 x_adv = torch.clamp(to_predict + perturbation, min=0, max=1)
                 x_adv.requires_grad_(True)
 
-        polluted_logits = self.torch_model(x_adv)
-        polluted_pred = torch.argmax(polluted_logits, dim=1).item()
-
-        original_pred = torch.argmax(self.torch_model(to_predict), dim=1).item()
-        print(f"Original prediction: {self.class_dict[original_pred]}")
-        print(f"Adversarial prediction: {self.class_dict[polluted_pred]}")
+        self.adv_image = x_adv
 
         perturbed_image_np = x_adv.detach().squeeze().permute(1, 2, 0).cpu().numpy() * 255
         perturbed_image_np = perturbed_image_np.astype(np.uint8)
 
         return perturbed_image_np
+
+    def predict(self):
+        polluted_logits = self.torch_model(self.adv_image)
+        polluted_pred = torch.argmax(polluted_logits, dim=1).item()
+
+        original_pred = torch.argmax(self.torch_model(self.image), dim=1).item()
+        print(f"Original prediction: {self.class_dict[original_pred]}")
+        print(f"Adversarial prediction: {self.class_dict[polluted_pred]}")
+        return self.class_dict[original_pred], self.class_dict[polluted_pred]

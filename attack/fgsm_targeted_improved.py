@@ -10,12 +10,15 @@ import argparse
 
 class ImprovedTargetedFGSM:
 
-    def __init__(self, model_path, class_dict, epsilon=0.2, num_steps=20, decay_factor=0.9):
+    def __init__(self, model_path, class_dict, epsilon=0.05, num_steps=1, decay_factor=0.9):
         self.epsilon = epsilon
         self.num_steps = num_steps
         self.class_dict = class_dict
         self.alpha = epsilon / num_steps
         self.decay_factor = decay_factor
+
+        self.image = None
+        self.adv_image = None
 
         # Load the model
         model = YOLO(model_path)
@@ -46,6 +49,7 @@ class ImprovedTargetedFGSM:
         # Load and preprocess the image
         tile = Image.open(tile_path).convert("RGB")
         to_predict = transforms.ToTensor()(tile).unsqueeze(0)  # Shape: [1, 3, H, W]
+        self.image = to_predict
         to_predict.requires_grad = True
 
         # Initialize adversarial example and momentum
@@ -79,14 +83,7 @@ class ImprovedTargetedFGSM:
                 # Decay step size
                 current_alpha *= self.decay_factor
 
-        # Forward pass through the model with the perturbed input
-        polluted_logits = self.torch_model(x_adv)
-        polluted_pred = torch.argmax(polluted_logits, dim=1).item()  # Predicted class index
-
-        # Original prediction details
-        original_pred = torch.argmax(self.torch_model(to_predict), dim=1).item()  # Original class index
-        print(f"Original prediction: {self.class_dict[original_pred]}")
-        print(f"Adversarial prediction: {self.class_dict[polluted_pred]}")
+        self.adv_image = x_adv
         
         # Convert the adversarial image to numpy for visualization
         perturbed_image_np = x_adv.detach().squeeze().permute(1, 2, 0).cpu().numpy() * 255  # Rescale to [0, 255]
@@ -94,3 +91,11 @@ class ImprovedTargetedFGSM:
 
         return perturbed_image_np
 
+    def predict(self):
+        polluted_logits = self.torch_model(self.adv_image)
+        polluted_pred = torch.argmax(polluted_logits, dim=1).item()
+
+        original_pred = torch.argmax(self.torch_model(self.image), dim=1).item()
+        print(f"Original prediction: {self.class_dict[original_pred]}")
+        print(f"Adversarial prediction: {self.class_dict[polluted_pred]}")
+        return self.class_dict[original_pred], self.class_dict[polluted_pred]

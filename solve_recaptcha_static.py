@@ -5,6 +5,10 @@ from PIL import Image
 import numpy as np  
 import os
 from keras.models import load_model
+from attack.fgsm_untargeted_improved import ImprovedUntargetedFGSM
+from attack.fgsm_untargeted import UntargetedFGSM
+from attack.fgsm_targeted import TargetedFGSM
+from attack.fgsm_targeted_improved import ImprovedTargetedFGSM
 
 # Constants
 CLASSES = ["Bicycle", "Bridge", "Bus", "Car", "Chimney", "Crosswalk", "Hydrant", "Motorcycle", "Other", "Palm", "Stairs", "Traffic Light"]
@@ -130,8 +134,8 @@ def traverse_files(folder_path):
 
 
 # Modify train and validation directory path to test different datasets
-train_dir=f"attack/{attack_type}/Training"
-val_dir=f"attack/{attack_type}/Validation"
+train_dir=f"attack/generated_data/{attack_type}/Training"
+val_dir=f"attack/generated_data/{attack_type}/Validation"
 correct_count_train,total_train = traverse_files(train_dir)
 correct_count_val,total_val = traverse_files(val_dir)
 print("Training Accuracy: ", correct_count_train/total_train)
@@ -139,4 +143,3 @@ print("train_count: ", total_train)
 print("validation Accuracy: ", correct_count_val/total_val)
 print("val_count: ", total_val)
 print("Total Accuracy: ", (correct_count_train+correct_count_val)/(total_train+total_val))
-

@@ -8,12 +8,14 @@ import os
 import cv2
 
 class UntargetedFGSM:
-    def __init__(self, model_path, class_dict, epsilon=0.2, num_steps=1):
+    def __init__(self, model_path, class_dict, epsilon=0.05, num_steps=1):
         self.model_path = model_path
         self.class_dict = class_dict
         self.epsilon = epsilon 
         self.num_steps = num_steps  
         self.alpha = epsilon / num_steps  
+        self.image = None
+        self.adv_image = None
 
         # Load the model
         self.model = YOLO(model_path)
@@ -41,6 +43,7 @@ class UntargetedFGSM:
         # Load and preprocess the image
         tile = Image.open(tile_path).convert("RGB")
         to_predict = transforms.ToTensor()(tile).unsqueeze(0)  # Shape: [1, 3, H, W]
+        self.image = to_predict
         to_predict.requires_grad = True
 
         # Initialize adversarial example
@@ -62,20 +65,23 @@ class UntargetedFGSM:
                 x_adv = torch.clamp(to_predict + perturbation, min=0, max=1)  # Clip the image
                 x_adv.requires_grad_(True)  # Re-enable gradient tracking for the next iteration
 
-        # Forward pass through the model with the perturbed input
-        polluted_logits = self.torch_model(x_adv)
-        polluted_pred = torch.argmax(polluted_logits, dim=1).item()  # Predicted class index
-
-        # Original prediction details
-        original_pred = torch.argmax(self.torch_model(to_predict), dim=1).item()  # Original class index
-        print(f"Original prediction: {self.class_dict[original_pred]}")
-        print(f"Adversarial prediction: {self.class_dict[polluted_pred]}")
+        self.adv_image = x_adv
         # Convert the adversarial image to numpy for visualization
         perturbed_image_np = x_adv.detach().squeeze().permute(1, 2, 0).cpu().numpy() * 255  # Rescale to [0, 255]
         perturbed_image_np = perturbed_image_np.astype(np.uint8)
 
         return perturbed_image_np
+    
+    def predict(self):
+        # Forward pass through the model with the perturbed input
+        polluted_logits = self.torch_model(self.adv_image)
+        polluted_pred = torch.argmax(polluted_logits, dim=1).item()  # Predicted class index
 
+        # Original prediction details
+        original_pred = torch.argmax(self.torch_model(self.image), dim=1).item()  # Original class index
+        print(f"Original prediction: {self.class_dict[original_pred]}")
+        print(f"Adversarial prediction: {self.class_dict[polluted_pred]}")
+        return self.class_dict[original_pred], self.class_dict[polluted_pred]
 # Test the class with the specified model and image path
 # model_path = '../models/YOLO_Classification/train4/weights/best.pt'
 # torchscript_model_path = 'models/YOLO_Classification/train4/weights/best.torchscript.pt'
