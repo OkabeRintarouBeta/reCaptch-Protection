@@ -69,10 +69,11 @@ if __name__ == "__main__":
     parser.add_argument('--epsilon', type=str, default=0.2)
     parser.add_argument('--decay_factor', type=str, default=0.9)
     parser.add_argument('--model_path', type=str, default='../models/YOLO_Classification/train4/weights/best.pt')
+    parser.add_argument('--root_data_dir', type=str, default='../data')
 
     args = parser.parse_args()
 
-    root_dir="../data"
+    root_dir=args.root_data_dir
     model_path=args.model_path
     # change attack_type as needed
     attack_type=args.attack_type
