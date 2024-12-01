@@ -1,0 +1,11 @@
+Method,Epsilon,Average Drop
+targeted_fgsm,epsilon_0.1,0.5355883333333333
+targeted_fgsm,epsilon_0.08,0.493525
+targeted_fgsm_improved,epsilon_0.08,0.493525
+targeted_fgsm,epsilon_0.06,0.46144375
+untargeted_fgsm_improved,epsilon_0.1,0.23876583333333334
+untargeted_fgsm_improved,epsilon_0.08,0.16462833333333335
+untargeted_fgsm,epsilon_0.1,0.15802166666666667
+untargeted_fgsm,epsilon_0.08,0.10742458333333332
+untargeted_fgsm_improved,epsilon_0.06,0.09178083333333333
+untargeted_fgsm,epsilon_0.06,-0.047661666666666665

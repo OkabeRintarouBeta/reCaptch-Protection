@@ -23,7 +23,7 @@ torch_model = torch.jit.load(torchscript_model_path)
 torch_model.eval()
 
 # Attack type
-attack_type= 'targeted_fgsm-0.1'
+attack_type= 'untargeted_fgsm_improved-0.1-0.9'
 
 def process_results(results):
     probs = F.softmax(results, dim=1)  # Convert logits to probabilities

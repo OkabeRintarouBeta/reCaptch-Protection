@@ -14,7 +14,7 @@ from attack.fgsm_targeted_improved import ImprovedTargetedFGSM
 CLASSES = ["Bicycle", "Bridge", "Bus", "Car", "Chimney", "Crosswalk", "Hydrant", "Motorcycle", "Other", "Palm", "Stairs", "Traffic Light"]
 YOLO_CLASSES = ['bicycle', 'bridge', 'bus', 'car', 'chimney', 'crosswalk', 'hydrant', 'motorcycle', 'mountain', 'other', 'palm', 'traffic light']
 MODEL_OPTION = 'yolo'
-attack_type= 'targeted_fgsm'
+attack_type= 'untargeted_fgsm_improved-0.06-0.9'
 
 def predict_image(image_path, model):
     """
@@ -118,9 +118,9 @@ def traverse_files(folder_path):
             if class_total > 0:
                 class_accuracy = class_correct_count / class_total
 
-                # print(subdir_path, class_accuracy)
-                # with open(f"class_accuracies_{attack_type}.txt", "a") as f:
-                #     f.write(f"Class: {subdir}, Accuracy: {class_accuracy:.5f}\n")
+                print(subdir_path, class_accuracy)
+                with open(f"class_accuracies_{attack_type}.txt", "a") as f:
+                    f.write(f"Class: {subdir}, Accuracy: {class_accuracy:.5f}\n")
 
     print("correct count: ", correct_count," total: ", total)
     print("Accuracy: ", correct_count/total)

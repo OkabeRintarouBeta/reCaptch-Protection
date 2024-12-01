@@ -3,12 +3,12 @@ import numpy as np
 
 # Data for the models
 x_labels = ['Baseline', 'Untargeted FGSM (ε=0.06)', 'Untargeted FGSM (ε=0.08)', 'Untargeted FGSM (ε=0.1)', 
-            'Untargeted FGSM Improved (ε=0.08)', 'Targeted FGSM (ε=0.06)', 'Targeted FGSM (ε=0.08)', 
+            'Untargeted FGSM Improved (ε=0.06)', 'Untargeted FGSM Improved (ε=0.08)', 'Untargeted FGSM Improved (ε=0.1)', 'Targeted FGSM (ε=0.06)', 'Targeted FGSM (ε=0.08)', 
             'Targeted FGSM (ε=0.1)', 'Targeted FGSM Improved (ε=0.08)']
 
 # Training and validation accuracies
-training_acc = [0.88670, 0.89569, 0.73177, 0.66954, 0.68298, 0.32183, 0.27136, 0.22678, 0.27136]
-validation_acc = [0.83004, 0.88538, 0.70817, 0.65744, 0.64954, 0.32016, 0.28854, 0.25296, 0.28854]
+training_acc = [0.88670, 0.89569, 0.73177, 0.66954, 0.75406, 0.68298, 0.66954, 0.32183, 0.27136, 0.22678, 0.27136]
+validation_acc = [0.83004, 0.88538, 0.70817, 0.65744, 0.73650, 0.64954, 0.57839, 0.32016, 0.28854, 0.25296, 0.28854]
 
 # Set the width of the bars
 bar_width = 0.35

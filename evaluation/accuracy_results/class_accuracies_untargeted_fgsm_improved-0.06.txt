@@ -1,0 +1,32 @@
+epsilon = 0.06, num_steps = 20, decay_factor = 0.9
+
+Class: Hydrant, Accuracy: 0.95991
+Class: Car, Accuracy: 0.70148
+Class: Bridge, Accuracy: 0.78288
+Class: Other, Accuracy: 0.51828
+Class: Motorcycle, Accuracy: 0.40741
+Class: Bus, Accuracy: 0.89784
+Class: Chimney, Accuracy: 0.61538
+Class: Bicycle, Accuracy: 0.66529
+Class: Mountain, Accuracy: 0.00000
+Class: Crosswalk, Accuracy: 0.77066
+Class: Traffic Light, Accuracy: 0.83582
+Class: Palm, Accuracy: 0.93590
+Total Correct count: 8306, Total: 11015, Accuracy: 0.75406
+
+-------------------
+Class: Hydrant, Accuracy: 1.00000
+Class: Car, Accuracy: 0.58108
+Class: Bridge, Accuracy: 0.79730
+Class: Other, Accuracy: 0.43243
+Class: Motorcycle, Accuracy: 0.51351
+Class: Bus, Accuracy: 0.91892
+Class: Chimney, Accuracy: 0.64706
+Class: Bicycle, Accuracy: 0.67568
+Class: Mountain, Accuracy: 0.00000
+Class: Crosswalk, Accuracy: 0.74324
+Class: Traffic Light, Accuracy: 0.83784
+Class: Palm, Accuracy: 0.90541
+Total Correct count: 559, Total: 759, Accuracy: 0.73650
+
+-------------------
