@@ -33,6 +33,36 @@ ax.legend()
 plt.tight_layout()
 plt.show()
 
+
+# Data
+epsilon_values = [0.06, 0.08, 0.1]
+untargeted_training_acc = [0.89569, 0.73177, 0.66954]
+untargeted_validation_acc = [0.88538, 0.70817, 0.65744]
+targeted_training_acc = [0.32183, 0.27136, 0.22678]
+targeted_validation_acc = [0.32016, 0.28854, 0.25296]
+
+# Plotting
+plt.figure(figsize=(10, 6))
+
+# Untargeted FGSM
+plt.plot(epsilon_values, untargeted_training_acc, marker='o', label='Untargeted Training Accuracy', linestyle='-')
+plt.plot(epsilon_values, untargeted_validation_acc, marker='o', label='Untargeted Validation Accuracy', linestyle='--')
+
+# Targeted FGSM
+plt.plot(epsilon_values, targeted_training_acc, marker='s', label='Targeted Training Accuracy', linestyle='-')
+plt.plot(epsilon_values, targeted_validation_acc, marker='s', label='Targeted Validation Accuracy', linestyle='--')
+
+# Labels, title, and legend
+plt.xlabel('Epsilon Value')
+plt.ylabel('Accuracy')
+plt.title('Comparison of Model Performance: Untargeted vs Targeted FGSM Attacks')
+plt.xticks(epsilon_values)
+plt.legend()
+plt.grid(True)
+
+# Show the plot
+plt.tight_layout()
+plt.show()
 # # Baseline Model (Finetuned Yolov8) Evaluation
 # baseline_training_acc = 0.88670
 # baseline_validation_acc = 0.83004
