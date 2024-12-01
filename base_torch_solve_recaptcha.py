@@ -86,7 +86,7 @@ def traverse_files(folder_path):
 
 # Modify train and validation directory path to test different datasets
 train_dir=f"data/Training"
-val_dir=f"data//Validation"
+val_dir=f"data/Validation"
 correct_count_train,total_train = traverse_files(train_dir)
 correct_count_val,total_val = traverse_files(val_dir)
 print("Training Accuracy: ", correct_count_train/total_train)
