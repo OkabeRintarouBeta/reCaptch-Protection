@@ -22,49 +22,50 @@ TARGETED_CLASS = {
     "Mountain":"Chimney","Other":"Palm","Palm":"Mountain","Stairs":"Other","Traffic Light":"Crosswalk"
 }
 
-def import_model(model_path, attack_type):
+def import_model(model_path, attack_type, epsilon, num_steps, decay_factor):
     if attack_type == "untargeted_fgsm_improved":
-        attack_model = ImprovedUntargetedFGSM(model_path, CLASS)
+        attack_model = ImprovedUntargetedFGSM(model_path, CLASS, epsilon=epsilon, num_steps=num_steps, decay_factor=decay_factor)
 
     elif attack_type == "untargeted_fgsm":
-        attack_model = UntargetedFGSM(model_path, CLASS)
+        attack_model = UntargetedFGSM(model_path, CLASS, epsilon=epsilon, num_steps=num_steps)
     elif attack_type == "targeted_fgsm":
-        attack_model = TargetedFGSM(model_path, CLASS)
+        attack_model = TargetedFGSM(model_path, CLASS, epsilon=epsilon, num_steps=num_steps)
     elif attack_type == "targeted_fgsm_improved":
-        attack_model = ImprovedTargetedFGSM(model_path, CLASS)
+        attack_model = ImprovedTargetedFGSM(model_path, CLASS, epsilon=epsilon, num_steps=num_steps, decay_factor=decay_factor)
     
     return attack_model
 
 def gen_folder_name(attack_type,model):
     if attack_type == "untargeted_fgsm":
         if model.get_num_steps() == 1:
-            return "untargeted_fgsm"
+            return f"untargeted_fgsm-{model.get_epsilon()}"
         else:
-            return f"untargeted_fgsm_{model.get_num_steps()}"
+            return f"untargeted_fgsm-{model.get_epsilon()}-{model.get_num_steps()}"
     elif attack_type == "untargeted_fgsm_improved":
         if model.get_num_steps() == 1:
-            return "untargeted_fgsm_improved"
+            return f"untargeted_fgsm_improved-{model.get_epsilon()}-{model.get_decay_factor()}"
         else:
-            return f"untargeted_fgsm_improved-{model.get_num_steps()}"
+            return f"untargeted_fgsm_improved-{model.get_epsilon()}-{model.get_num_steps()}-{model.get_decay_factor()}"
     elif attack_type == "targeted_fgsm":
         if model.get_num_steps() == 1:
-            return "targeted_fgsm"
+            return f"targeted_fgsm-{model.get_epsilon()}"
         else:
-            return f"targeted_fgsm_{model.get_num_steps()}"
+            return f"targeted_fgsm-{model.get_epsilon()}-{model.get_num_steps()}"
     elif attack_type == "targeted_fgsm_improved":
         if model.get_num_steps() == 1:
-            return "targeted_fgsm_improved"
+            return f"targeted_fgsm_improved-{model.get_epsilon()}-{model.get_decay_factor()}"
         else:
-            return f"targeted_fgsm_improved-{model.get_num_steps()}"
+            return f"targeted_fgsm_improved-{model.get_epsilon()}-{model.get_num_steps()}-{model.get_decay_factor()}"
     
-        
-
 
 if __name__ == "__main__":
 
     #read attack type from args
     parser = argparse.ArgumentParser()
     parser.add_argument('--attack_type', type=str, default='targeted_fgsm')
+    parser.add_argument('--num_steps', type=str, default=1 )
+    parser.add_argument('--epsilon', type=str, default=0.1)
+    parser.add_argument('--decay_factor', type=str, default=0.9)
     parser.add_argument('--model_path', type=str, default='../models/YOLO_Classification/train4/weights/best.pt')
     parser.add_argument('--root_data_dir', type=str, default='../data')
 
@@ -74,8 +75,11 @@ if __name__ == "__main__":
     model_path=args.model_path
     # change attack_type as needed
     attack_type=args.attack_type
+    num_steps=int(args.num_steps)
+    epsilon=float(args.epsilon)
+    decay_factor=float(args.decay_factor)
 
-    attack_model = import_model(model_path, attack_type)
+    attack_model = import_model(model_path, attack_type, epsilon=epsilon, num_steps=num_steps, decay_factor=decay_factor)
     folder_name = gen_folder_name(attack_type, attack_model)
 
     for category in ["Training", "Validation"]:

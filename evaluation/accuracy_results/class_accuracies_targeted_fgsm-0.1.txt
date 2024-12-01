@@ -1,0 +1,30 @@
+Class: Hydrant, Accuracy: 0.41759
+Class: Car, Accuracy: 0.08191
+Class: Bridge, Accuracy: 0.06889
+Class: Other, Accuracy: 0.18925
+Class: Motorcycle, Accuracy: 0.18519
+Class: Bus, Accuracy: 0.31342
+Class: Chimney, Accuracy: 0.28205
+Class: Bicycle, Accuracy: 0.06612
+Class: Mountain, Accuracy: 0.00000
+Class: Crosswalk, Accuracy: 0.22175
+Class: Traffic Light, Accuracy: 0.24966
+Class: Palm, Accuracy: 0.77622
+Total Correct count: 2498, Total: 11015, Accuracy: 0.22678
+
+-------------------
+Class: Hydrant, Accuracy: 0.48649
+Class: Car, Accuracy: 0.09459
+Class: Bridge, Accuracy: 0.16216
+Class: Other, Accuracy: 0.18919
+Class: Motorcycle, Accuracy: 0.08108
+Class: Bus, Accuracy: 0.32432
+Class: Chimney, Accuracy: 0.05882
+Class: Bicycle, Accuracy: 0.01351
+Class: Mountain, Accuracy: 0.00000
+Class: Crosswalk, Accuracy: 0.28378
+Class: Traffic Light, Accuracy: 0.21622
+Class: Palm, Accuracy: 0.72973
+Total Correct count: 192, Total: 759, Accuracy: 0.25296
+
+-------------------

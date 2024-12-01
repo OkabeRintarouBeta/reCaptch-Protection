@@ -1,0 +1,32 @@
+epsilon = 0.08
+-------------------
+Class: Hydrant, Accuracy: 0.53229
+Class: Car, Accuracy: 0.12900
+Class: Bridge, Accuracy: 0.14614
+Class: Other, Accuracy: 0.19427
+Class: Motorcycle, Accuracy: 0.29630
+Class: Bus, Accuracy: 0.33160
+Class: Chimney, Accuracy: 0.33333
+Class: Bicycle, Accuracy: 0.15014
+Class: Mountain, Accuracy: 0.00000
+Class: Crosswalk, Accuracy: 0.27909
+Class: Traffic Light, Accuracy: 0.28765
+Class: Palm, Accuracy: 0.77156
+Total Correct count: 2989, Total: 11015, Accuracy: 0.27136
+
+-------------------
+Class: Hydrant, Accuracy: 0.56757
+Class: Car, Accuracy: 0.12162
+Class: Bridge, Accuracy: 0.25676
+Class: Other, Accuracy: 0.14865
+Class: Motorcycle, Accuracy: 0.14865
+Class: Bus, Accuracy: 0.33784
+Class: Chimney, Accuracy: 0.11765
+Class: Bicycle, Accuracy: 0.10811
+Class: Mountain, Accuracy: 0.00000
+Class: Crosswalk, Accuracy: 0.33784
+Class: Traffic Light, Accuracy: 0.20270
+Class: Palm, Accuracy: 0.70270
+Total Correct count: 219, Total: 759, Accuracy: 0.28854
+
+-------------------
