@@ -19,7 +19,7 @@ CLASS = {0: 'Bicycle', 1: 'Bridge', 2: 'Bus', 3: 'Car', 4: 'Chimney', 5: 'Crossw
 TARGETED_CLASS = {
     "Bicycle":"Motorcycle", "Bridge":"Mountain","Bus":"Car","Car":"Bus","Chimney":"Mountain",
     "Crosswalk":"Traffic Light","Hydrant":"Traffic Light","Motorcycle":"Bicycle",
-    "Palm":"Mountain","Stairs":"Other","Traffic Light":"Crosswalk"
+    "Mountain":"Chimney","Other":"Palm","Palm":"Mountain","Stairs":"Other","Traffic Light":"Crosswalk"
 }
 
 def import_model(model_path, attack_type):
@@ -64,7 +64,7 @@ if __name__ == "__main__":
 
     #read attack type from args
     parser = argparse.ArgumentParser()
-    parser.add_argument('--attack_type', type=str, default='untargeted_fgsm')
+    parser.add_argument('--attack_type', type=str, default='targeted_fgsm')
     parser.add_argument('--model_path', type=str, default='../models/YOLO_Classification/train4/weights/best.pt')
     parser.add_argument('--root_data_dir', type=str, default='../data')
 

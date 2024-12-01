@@ -10,7 +10,7 @@ import argparse
 
 class ImprovedTargetedFGSM:
 
-    def __init__(self, model_path, class_dict, epsilon=0.05, num_steps=1, decay_factor=0.9):
+    def __init__(self, model_path, class_dict, epsilon=0.08, num_steps=1, decay_factor=0.9):
         self.epsilon = epsilon
         self.num_steps = num_steps
         self.class_dict = class_dict
