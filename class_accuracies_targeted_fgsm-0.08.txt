@@ -1,3 +1,5 @@
+epsilon = 0.08
+-------------------
 Class: Hydrant, Accuracy: 0.53229
 Class: Car, Accuracy: 0.12900
 Class: Bridge, Accuracy: 0.14614
